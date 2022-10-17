@@ -47,7 +47,13 @@ Grafo::~Grafo() {
  * @author Mara de Lemos Gomes
  */
 bool Grafo::existeNo(int id){
-    std::find(this->nos.begin(), this->nos.end(), id) != this->nos.end() ? true : false;
+    // std::find(this->nos.begin(), this->nos.end(), id) != this->nos.end() ? true : false;
+
+    for(int i = 0; i < nos.size(); i++)
+        if(nos[i]->getId() == id)
+            return true;
+
+    return false;
 }
 
 /**

@@ -35,15 +35,14 @@ int main(int argc, char const *argv[])
 {
     Grafo *grafo_th = new Grafo();
     
-    // Leitura do arquivo:
+    // LEITURA DO ARQUIVO:
 
     string nomeArquivo = "./input/grafo.csv";
     // Abertura do arquivo:
     fstream arq;
     arq.open(nomeArquivo, ios::in);
-    if (!arq.is_open())
-    {
-        std::cout << "FALHA AO ABRIR O ARQUIVO (1)" << endl;
+    if (!arq.is_open()){
+        std::cout << "FALHA AO ABRIR O ARQUIVO" << endl;
         exit(0);
     }
 
