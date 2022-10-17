@@ -19,6 +19,8 @@
  *                      Arquivo principal                  *
  ***********************************************************/
 
+#include "Grafo.h"
+
 /**
  * Função principal da aplicação
  * @param argc
@@ -27,6 +29,14 @@
  *
  * @author Mara de Lemos Gomes
  */
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[])
+{
+    Grafo *grafo_th = new Grafo();
+    string input = "./grafo.csv";
+
+    // Leitura do arquivo:
+    
+
+
     return 0;
 }
