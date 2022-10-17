@@ -27,7 +27,7 @@ class Aresta {
 private:
     int origemId;
     int destinoId;
-    float custo;
+    int custo;
     int regra; //Cada aresta possui uma regra de transição associada.
     /* Regras de transição
     0: A->B
@@ -39,13 +39,13 @@ private:
 
 public:
     //Constructor
-    Aresta(int origemId, int destinoId, float custo, int regra);
+    Aresta(int origemId, int destinoId, int custo, int regra);
     //Destructor
     ~Aresta();
     //Getters
     int getOrigemId();
     int getDestinoId();
-    float getCusto();
+    int getCusto();
     int getRegra();
 };
 

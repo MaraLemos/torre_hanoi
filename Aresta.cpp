@@ -30,7 +30,7 @@
  * 
  * @author Mara de Lemos Gomes
  */
-Aresta::Aresta(int origemId, int destinoId, float custo, int regra) {
+Aresta::Aresta(int origemId, int destinoId, int custo, int regra) {
     this->origemId = origemId;
     this->destinoId = destinoId;
     this->custo = custo;
@@ -71,7 +71,7 @@ int Aresta::getDestinoId() {
  * 
  * @author Mara de Lemos Gomes
  */
-float Aresta::getCusto() {
+int Aresta::getCusto() {
     return this->custo;
 }
 
