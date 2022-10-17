@@ -89,7 +89,7 @@ vector <Aresta*> No::getArestas(){
  * 
  * @author Mara de Lemos Gomes
  */
-void No::insereAresta(int destinoId, float custo, int regra){
+void No::insereAresta(int destinoId, int custo, int regra){
     Aresta* aresta = new Aresta(this->getId(), destinoId, custo, regra);
     this->arestas.push_back(aresta);
 }

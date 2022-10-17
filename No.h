@@ -46,7 +46,7 @@ public:
     string getEstado();
     vector <Aresta*> getArestas();
     //Other methods
-    void insereAresta(int destinoId, float custo, int regra);
+    void insereAresta(int destinoId, int custo, int regra);
     void removeAresta(int destinoId);
 };
 #endif //NO_H

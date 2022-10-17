@@ -97,11 +97,21 @@ void Grafo::insereNo(int id, string estado, int custo){
  * 
  * @author Mara de Lemos Gomes
  */
-void Grafo::insereAresta(int origemId, int destinoId, float custo, int regra){
+void Grafo::insereAresta(int origemId, int destinoId, int custo, int regra){
     if(existeNo(origemId) && existeNo(destinoId)){
         No* no = this->nos.at(origemId);
         no->insereAresta(destinoId, custo, regra);
         no = this->nos.at(destinoId);
+        switch (regra)
+        {
+        case 0: regra = 2; break;
+        case 1: regra = 4; break;
+        case 2: regra = 0; break;
+        case 3: regra = 5; break;
+        case 4: regra = 1; break;
+        case 5: regra = 3; break;
+        default: break;
+        }
         no->insereAresta(origemId, custo, regra);
         this->totalArestas++;
     }

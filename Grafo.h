@@ -22,8 +22,14 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
-#include <algorithm>
 #include "No.h"
+
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <stdio.h>
 
 using namespace std;
 
@@ -42,7 +48,7 @@ public:
     //Other methods
     bool existeNo(int id);
     void insereNo(int id, string estado, int custo);
-    void insereAresta(int origemId, int destinoId, float custo, int regra);
+    void insereAresta(int origemId, int destinoId, int custo, int regra);
     bool removeNo(int id);
     bool removeAresta(int origemId, int destinoId);
     void imprime();
