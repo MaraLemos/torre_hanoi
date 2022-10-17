@@ -37,7 +37,7 @@ int main(int argc, char const *argv[])
     
     // Leitura do arquivo:
 
-    string nomeArquivo = "./grafo.csv";
+    string nomeArquivo = "./input/grafo.csv";
     // Abertura do arquivo:
     fstream arq;
     arq.open(nomeArquivo, ios::in);
