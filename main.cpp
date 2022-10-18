@@ -23,6 +23,88 @@
 
 using namespace std;
 
+void funcionalidades(char opc);
+void testarNovamente(char s_n);
+
+void print_menu()
+{
+    cout << "----------------------------------------- MENU -----------------------------------------" << endl
+         << endl;
+    cout << "a) Busca Backtracking" << endl
+         << endl;
+    cout << "b) Busca em Largura" << endl
+         << endl;
+    cout << "c) Busca em Profundidade" << endl
+         << endl;
+    cout << "d) Busca Ordenada" << endl
+         << endl;
+    cout << "e) Busca Gulosa" << endl
+         << endl;
+    cout << "f) Busca A*" << endl
+         << endl;
+
+    cout << "Digite a opção da funcionalidade que deseja testar: ";
+    char opc;
+    cin >> opc;
+    funcionalidades(opc);
+}
+
+void funcionalidades(char opc)
+{
+    switch (opc)
+    {
+    case 'a':
+        // TODO: @0ket - chamar busca backtracking
+        break;
+    case 'b':
+        // TODO: @mariana - chamar busca em largura
+        break;
+    case 'c':
+        // TODO: @Gabreu20 - chamar busca em profundidade
+        break;
+    case 'd':
+        // TODO: @MaraLemos - chamar busca ordenada
+        break;
+    case 'e':
+        // TODO: @RosaOttoni - chamar busca gulosa
+        break;
+    case 'f':
+        // TODO: @LuciaPereira - chamar busca A*
+        break;
+    default:
+        cout << "Opção inválida. Tente novamente, digitando uma opção válida (a, b, c, d, e ou f): ";
+        cin >> opc;
+        funcionalidades(opc);
+        break;
+    }
+
+    cout << endl
+         << "Deseja testar outra funcionalidade? (s/n)" << endl;
+    char s_n;
+    cin >> s_n;
+    testarNovamente(s_n);
+}
+
+void testarNovamente(char s_n)
+{
+    switch (s_n)
+    {
+    case 's':
+        print_menu();
+        break;
+
+    case 'n':
+        exit(0);
+        break;
+
+    default:
+        std::cout << "Opção inválida. Tente novamente, digitando uma opção válida (s ou n): ";
+        std::cin >> s_n;
+        testarNovamente(s_n);
+        break;
+    }
+}
+
 /**
  * Função principal da aplicação
  * @param argc
@@ -51,6 +133,9 @@ int main(int argc, char const *argv[])
     // A primeira linha do arquivo é o numero de nós/estados:
     int n = stoi(line);
 
+    // cout para conferência da leitura:
+    // cout << n << endl;
+
     // Leitura das "n" linhas com: id do nó;estado do nó;custo do nó
     for(int i = 0; i < n; i++)
     {
@@ -66,6 +151,9 @@ int main(int argc, char const *argv[])
         int id = stoi(vet[0]); 
         string estado = vet[1];
         int custo = stoi(vet[2]);
+
+        // cout para conferência da leitura:
+        // cout << id << ";" << estado << ";" << custo << endl;
 
         // Insere nó no grafo:
         grafo_th->insereNo(id, estado, custo);
@@ -88,11 +176,36 @@ int main(int argc, char const *argv[])
         int custo = vet_[2];
         int regra = vet_[3];
 
+        // cout para conferência da leitura:
+        // cout << origemId << ";" << destinoId << ";" << custo << ";" << regra << endl;
+
         // Insere aresta no grafo:
         grafo_th->insereAresta(origemId, destinoId, custo, regra);
     }
 
-    arq.close();
 
+    // MENUS DE APLICAÇÃO:
+    cout << "------------------------------ PROBLEMA 2: TORRE DE HANOI ------------------------------" << endl
+         << endl;
+    cout << "O problema das Torres De Hanói é um quebra-cabeça criado pelo matemático francês Edourd Lucas em 1883.";
+    cout << " Esse quebra-cabeça consiste de 3 hastes e \"n\" discos (vamos usar 4), inicialmente dispostos em ordem decrescente de tamanho na haste esquerda (A).";
+    cout << " O objetivo desse jogo é transferir os \"n\" discos da haste inicial para a haste mais à direita (C).";
+    cout << " Cada movimento consiste em retirar um disco do topo de uma haste e passar para o topo de outra haste, seguindo as regras:" << endl;
+    cout << "   -Os discos devem ser movidos um de cada vez." << endl;
+    cout << "   -Um disco maior NÃO pode ficar por cima de um disco menor." << endl
+         << endl;
+    cout << "As regras de transição de estado para esse problema são:" << endl;
+    cout << "   R1: A -> B" << endl;
+    cout << "   R2: A -> C" << endl;
+    cout << "   R3: B -> A" << endl;
+    cout << "   R4: B -> C" << endl;
+    cout << "   R5: C -> A" << endl;
+    cout << "   R6: C -> B" << endl
+         << endl;
+
+    print_menu();
+
+    arq.close();
+    grafo_th->~Grafo();
     return 0;
 }
