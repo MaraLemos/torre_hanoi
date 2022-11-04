@@ -156,6 +156,125 @@ bool Grafo::removeAresta(int origemId, int destinoId){
     return false;
 }
 
+/**
+ * Imprime o Grafo
+ * 
+ * @author Mara de Lemos Gomes
+ */
 void Grafo::imprime(){
+    for (int i = 0; i < this->nos.size(); i++){
+        cout << " #" << this->nos.at(i)->getId() << " ";
+        cout << this->nos.at(i)->getEstado() << " - arestas com os nos: ";
+        for (int j = 0; j < this->nos.at(i)->getArestas().size(); j++){
+            cout << this->nos.at(i)->getArestas().at(j)->getDestinoId();
+            cout << " (custo: " << this->nos.at(i)->getArestas().at(j)->getCusto() << ") ";
+        }
+        cout << endl;
+    }
+    
+}
 
+void bubble_sort (vector<No*> &abertos, vector<int> &abertos_custo) {
+    int auxCusto;
+    No* auxNo;
+
+    for (int k = abertos_custo.size() - 1; k > 0; k--) {
+
+        for (int j = 0; j < k; j++) {
+
+            if (abertos_custo[j] > abertos_custo[j + 1]) {
+                auxCusto = abertos_custo[j];
+                abertos_custo[j] = abertos_custo[j + 1];
+                abertos_custo[j + 1] = auxCusto;
+
+                auxNo = abertos[j];
+                abertos[j] = abertos[j + 1];
+                abertos[j + 1] = auxNo;
+            }
+        }
+    }
+}
+
+int findIndex(const vector<No*> &arr, No* item) {
+
+    for (auto i = 0; i < arr.size(); ++i) {
+        if (arr[i] == item)
+            return i;
+    }
+
+    return -1;
+}
+
+void Grafo::buscaOrdenada(){
+
+    vector<No*> abertos;
+    vector<int> abertos_custo;
+    vector<No*> fechados;
+    int custo_atual;
+    
+    No* atual = this->nos.at(0);
+
+    abertos.push_back(this->nos.at(0));
+    abertos_custo.push_back(0);
+
+    while(atual->getEstado() != "Z"){
+
+        atual = abertos.at(0);
+        custo_atual = abertos_custo.at(0);
+
+        abertos.erase(abertos.begin());
+        abertos_custo.erase(abertos_custo.begin());
+
+        cout << "Estado atual: " << atual->getEstado() << "(" << custo_atual << ")" << endl;
+
+        if(atual->getEstado() == "Z")
+            break;
+
+        for (int i = 0; i < atual->getArestas().size(); i++){
+            No* destino = getNo(atual->getArestas().at(i)->getDestinoId());
+
+            if(find(fechados.begin(), fechados.end(), destino) != fechados.end()){
+                //Descarta ciclos
+            }else if(find(abertos.begin(), abertos.end(), destino) != abertos.end()){
+
+                //Elemento já está na lista de abertos
+                auto pos = findIndex(abertos, destino);
+                if(pos != -1){
+                    if(abertos_custo.at(pos) > atual->getArestas().at(i)->getCusto() + custo_atual){
+                        cout << "Poda do estado " << destino->getEstado() << "(" << abertos_custo[pos] << ")" << endl;
+                        abertos_custo[pos] = atual->getArestas().at(i)->getCusto() + custo_atual;
+                        destino->setPai(atual);
+                        abertos[pos] = destino;
+                    }else{
+                        cout << "Poda do estado " << destino->getEstado() << "(" << atual->getArestas().at(i)->getCusto() + custo_atual << ")" << endl;
+                    }
+                }
+
+            }else{
+                destino->setPai(atual);
+                abertos.push_back(destino);
+                abertos_custo.push_back(atual->getArestas().at(i)->getCusto() + custo_atual);
+            }
+        }
+
+        fechados.push_back(atual);
+
+        //ordena lista de abertos
+        bubble_sort(abertos, abertos_custo);
+
+        cout << "Lista de abertos: ";
+        for (int i = 0; i < abertos.size(); i++){
+            cout << abertos.at(i)->getEstado() << "(";
+            cout << abertos_custo.at(i) << ") ";
+        }
+
+        cout << endl << "________________________________________________" << endl;
+    }
+
+    cout << "O algoritmo chegou ao estado solucao Z com custo " << custo_atual << endl;
+    cout << "Caminho solução: Z ->";
+    while(atual->getPai() != nullptr){
+        cout << atual->getPai()->getEstado() << " -> ";
+        atual = atual->getPai();
+    } 
 }

@@ -35,6 +35,8 @@ private:
     int custo; //Custo associado a heurística
     vector <Aresta*> arestas;
 
+    No* pai;
+
 public:
     //Constructor
     No(int id, string estado, int custo);
@@ -48,5 +50,8 @@ public:
     //Other methods
     void insereAresta(int destinoId, int custo, int regra);
     void removeAresta(int destinoId);
+
+    No* getPai();
+    void setPai(No* pai);
 };
 #endif //NO_H

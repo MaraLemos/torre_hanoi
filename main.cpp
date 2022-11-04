@@ -105,18 +105,42 @@ void testarNovamente(char s_n)
     }
 }
 
+void teste(){
+
+    Grafo *grafo_th = new Grafo();
+    grafo_th->insereNo(0,"A",0);
+    grafo_th->insereNo(1,"N",0);
+    grafo_th->insereNo(2,"M",0);
+    grafo_th->insereNo(3,"X",0);
+    grafo_th->insereNo(4,"R",0);
+    grafo_th->insereNo(5,"Z",0);
+    grafo_th->insereAresta(0,1,5,0);
+    grafo_th->insereAresta(0,2,10,0);
+    grafo_th->insereAresta(0,3,7,0);
+    grafo_th->insereAresta(1,2,2,0);
+    grafo_th->insereAresta(2,3,9,0);
+    grafo_th->insereAresta(2,5,4,0);
+    grafo_th->insereAresta(3,4,1,0);
+    grafo_th->insereAresta(4,5,9,0);
+    //grafo_th->imprime();
+    grafo_th->buscaOrdenada();
+}
+
+int main(int argc, char const *argv[]){
+    teste();
+} 
 /**
  * Função principal da aplicação
  * @param argc
  * @param argv
  * @return int
  *
- * @author Mara de Lemos Gomes
+ * @author Maria Eduarda Ribeiro Facio
  */
-int main(int argc, char const *argv[])
+/*int main(int argc, char const *argv[])
 {
     Grafo *grafo_th = new Grafo();
-    
+
     // LEITURA DO ARQUIVO:
 
     string nomeArquivo = "./input/grafo.csv";
@@ -208,4 +232,4 @@ int main(int argc, char const *argv[])
     arq.close();
     grafo_th->~Grafo();
     return 0;
-}
+}*/

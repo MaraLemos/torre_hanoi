@@ -31,6 +31,7 @@ No::No(int id, string estado, int custo) {
     this->id = id;
     this->estado = estado;
     this->custo = custo;
+    this->pai = nullptr;
 }
 
 /**
@@ -106,4 +107,12 @@ void No::removeAresta(int destinoId){
         if(aresta->getDestinoId() == destinoId)
             this->arestas.erase(this->arestas.begin() + i);
     }
+}
+
+No* No::getPai(){
+    return this->pai;
+}
+
+void No::setPai(No* no){
+    this->pai = no;
 }

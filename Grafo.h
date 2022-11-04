@@ -30,6 +30,9 @@
 #include <sstream>
 #include <vector>
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -52,5 +55,7 @@ public:
     bool removeNo(int id);
     bool removeAresta(int origemId, int destinoId);
     void imprime();
+    //Buscas
+    void buscaOrdenada();
 };
 #endif //GRAFO_H
