@@ -23,10 +23,10 @@
 
 using namespace std;
 
-void funcionalidades(char opc);
-void testarNovamente(char s_n);
+void funcionalidades(char opc, Grafo* grafo_th);
+void testarNovamente(char s_n, Grafo* grafo_th);
 
-void print_menu()
+void print_menu(Grafo* grafo_th)
 {
     cout << "----------------------------------------- MENU -----------------------------------------" << endl
          << endl;
@@ -46,10 +46,10 @@ void print_menu()
     cout << "Digite a opção da funcionalidade que deseja testar: ";
     char opc;
     cin >> opc;
-    funcionalidades(opc);
+    funcionalidades(opc, grafo_th);
 }
 
-void funcionalidades(char opc)
+void funcionalidades(char opc, Grafo* grafo_th)
 {
     switch (opc)
     {
@@ -63,7 +63,7 @@ void funcionalidades(char opc)
         // TODO: @Gabreu20 - chamar busca em profundidade
         break;
     case 'd':
-        // TODO: @MaraLemos - chamar busca ordenada
+        grafo_th->buscaOrdenada();
         break;
     case 'e':
         // TODO: @RosaOttoni - chamar busca gulosa
@@ -74,7 +74,7 @@ void funcionalidades(char opc)
     default:
         cout << "Opção inválida. Tente novamente, digitando uma opção válida (a, b, c, d, e ou f): ";
         cin >> opc;
-        funcionalidades(opc);
+        funcionalidades(opc, grafo_th);
         break;
     }
 
@@ -82,15 +82,15 @@ void funcionalidades(char opc)
          << "Deseja testar outra funcionalidade? (s/n)" << endl;
     char s_n;
     cin >> s_n;
-    testarNovamente(s_n);
+    testarNovamente(s_n, grafo_th);
 }
 
-void testarNovamente(char s_n)
+void testarNovamente(char s_n, Grafo* grafo_th)
 {
     switch (s_n)
     {
     case 's':
-        print_menu();
+        print_menu(grafo_th);
         break;
 
     case 'n':
@@ -100,35 +100,11 @@ void testarNovamente(char s_n)
     default:
         std::cout << "Opção inválida. Tente novamente, digitando uma opção válida (s ou n): ";
         std::cin >> s_n;
-        testarNovamente(s_n);
+        testarNovamente(s_n, grafo_th);
         break;
     }
 }
 
-void teste(){
-
-    Grafo *grafo_th = new Grafo();
-    grafo_th->insereNo(0,"A",0);
-    grafo_th->insereNo(1,"N",0);
-    grafo_th->insereNo(2,"M",0);
-    grafo_th->insereNo(3,"X",0);
-    grafo_th->insereNo(4,"R",0);
-    grafo_th->insereNo(5,"Z",0);
-    grafo_th->insereAresta(0,1,5,0);
-    grafo_th->insereAresta(0,2,10,0);
-    grafo_th->insereAresta(0,3,7,0);
-    grafo_th->insereAresta(1,2,2,0);
-    grafo_th->insereAresta(2,3,9,0);
-    grafo_th->insereAresta(2,5,4,0);
-    grafo_th->insereAresta(3,4,1,0);
-    grafo_th->insereAresta(4,5,9,0);
-    //grafo_th->imprime();
-    grafo_th->buscaOrdenada();
-}
-
-int main(int argc, char const *argv[]){
-    teste();
-} 
 /**
  * Função principal da aplicação
  * @param argc
@@ -137,7 +113,7 @@ int main(int argc, char const *argv[]){
  *
  * @author Maria Eduarda Ribeiro Facio
  */
-/*int main(int argc, char const *argv[])
+int main(int argc, char const *argv[])
 {
     Grafo *grafo_th = new Grafo();
 
@@ -227,9 +203,9 @@ int main(int argc, char const *argv[]){
     cout << "   R6: C -> B" << endl
          << endl;
 
-    print_menu();
+    print_menu(grafo_th);
 
     arq.close();
     grafo_th->~Grafo();
     return 0;
-}*/
+}

@@ -50,8 +50,5 @@ public:
     //Other methods
     void insereAresta(int destinoId, int custo, int regra);
     void removeAresta(int destinoId);
-
-    No* getPai();
-    void setPai(No* pai);
 };
 #endif //NO_H

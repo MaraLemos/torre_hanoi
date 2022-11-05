@@ -49,7 +49,7 @@ Grafo::~Grafo() {
 bool Grafo::existeNo(int id){
     // std::find(this->nos.begin(), this->nos.end(), id) != this->nos.end() ? true : false;
 
-    for(int i = 0; i < nos.size(); i++)
+    for(size_t i = 0; i < nos.size(); i++)
         if(nos[i]->getId() == id)
             return true;
 
@@ -162,10 +162,10 @@ bool Grafo::removeAresta(int origemId, int destinoId){
  * @author Mara de Lemos Gomes
  */
 void Grafo::imprime(){
-    for (int i = 0; i < this->nos.size(); i++){
+    for (size_t i = 0; i < this->nos.size(); i++){
         cout << " #" << this->nos.at(i)->getId() << " ";
         cout << this->nos.at(i)->getEstado() << " - arestas com os nos: ";
-        for (int j = 0; j < this->nos.at(i)->getArestas().size(); j++){
+        for (size_t j = 0; j < this->nos.at(i)->getArestas().size(); j++){
             cout << this->nos.at(i)->getArestas().at(j)->getDestinoId();
             cout << " (custo: " << this->nos.at(i)->getArestas().at(j)->getCusto() << ") ";
         }
@@ -174,107 +174,115 @@ void Grafo::imprime(){
     
 }
 
-void bubble_sort (vector<No*> &abertos, vector<int> &abertos_custo) {
-    int auxCusto;
-    No* auxNo;
+struct No_busca_ordenada{
+    No* no;
+    int custo;
+    No_busca_ordenada* pai;
+};
 
-    for (int k = abertos_custo.size() - 1; k > 0; k--) {
-
-        for (int j = 0; j < k; j++) {
-
-            if (abertos_custo[j] > abertos_custo[j + 1]) {
-                auxCusto = abertos_custo[j];
-                abertos_custo[j] = abertos_custo[j + 1];
-                abertos_custo[j + 1] = auxCusto;
-
-                auxNo = abertos[j];
-                abertos[j] = abertos[j + 1];
-                abertos[j + 1] = auxNo;
-            }
+/**
+ * Função aux de buscaOrdenada
+ * Verifica se estado pode ser inserido na arvore caso não provoque ciclos
+ * @param novo
+ * @param arvore
+ * 
+ * @author Mara de Lemos Gomes
+ */
+bool existeCiclo(No* novo, No_busca_ordenada* arvore){
+    
+    while (arvore != nullptr){
+        if (arvore->no == novo){
+            return true;
         }
+        arvore = arvore->pai;
     }
+    return false;
 }
 
-int findIndex(const vector<No*> &arr, No* item) {
-
-    for (auto i = 0; i < arr.size(); ++i) {
-        if (arr[i] == item)
-            return i;
-    }
-
-    return -1;
-}
-
+/**
+ * Algoritmo de busca ordenada
+ * 
+ * @author Mara de Lemos Gomes
+ */
 void Grafo::buscaOrdenada(){
 
-    vector<No*> abertos;
-    vector<int> abertos_custo;
-    vector<No*> fechados;
-    int custo_atual;
+    string estado_solucao = "CCCC";
+
+    vector<No_busca_ordenada*> abertos;
+    vector<No_busca_ordenada*> fechados;
     
-    No* atual = this->nos.at(0);
+    No_busca_ordenada* atual = new No_busca_ordenada();
+    atual->no = this->nos.at(0);
+    atual->pai = nullptr;
+    atual->custo = 0;
 
-    abertos.push_back(this->nos.at(0));
-    abertos_custo.push_back(0);
+    abertos.push_back(atual);
 
-    while(atual->getEstado() != "Z"){
+    do{
 
         atual = abertos.at(0);
-        custo_atual = abertos_custo.at(0);
-
         abertos.erase(abertos.begin());
-        abertos_custo.erase(abertos_custo.begin());
 
-        cout << "Estado atual: " << atual->getEstado() << "(" << custo_atual << ")" << endl;
+        cout << "Estado atual: " << atual->no->getEstado() << "(" << atual->custo << ")" << endl;
 
-        if(atual->getEstado() == "Z")
-            break;
+        for (size_t i = 0; i < atual->no->getArestas().size(); i++){
+            
+            No* novo_estado = getNo(atual->no->getArestas().at(i)->getDestinoId());
 
-        for (int i = 0; i < atual->getArestas().size(); i++){
-            No* destino = getNo(atual->getArestas().at(i)->getDestinoId());
+            if(!existeCiclo(novo_estado, atual)){
 
-            if(find(fechados.begin(), fechados.end(), destino) != fechados.end()){
-                //Descarta ciclos
-            }else if(find(abertos.begin(), abertos.end(), destino) != abertos.end()){
+                No_busca_ordenada* novo = new No_busca_ordenada();
+                novo->no = novo_estado;
+                novo->pai = atual;
+                novo->custo = atual->no->getArestas().at(i)->getCusto() + atual->custo;
 
-                //Elemento já está na lista de abertos
-                auto pos = findIndex(abertos, destino);
-                if(pos != -1){
-                    if(abertos_custo.at(pos) > atual->getArestas().at(i)->getCusto() + custo_atual){
-                        cout << "Poda do estado " << destino->getEstado() << "(" << abertos_custo[pos] << ")" << endl;
-                        abertos_custo[pos] = atual->getArestas().at(i)->getCusto() + custo_atual;
-                        destino->setPai(atual);
-                        abertos[pos] = destino;
-                    }else{
-                        cout << "Poda do estado " << destino->getEstado() << "(" << atual->getArestas().at(i)->getCusto() + custo_atual << ")" << endl;
+                size_t j = 0;
+                for(; j < abertos.size(); j++){
+                    if(abertos.at(j)->no == novo_estado){
+                        if (abertos.at(j)->custo > novo->custo){
+                            cout << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << ")" << endl;
+                            abertos.at(j) = novo;
+                        }else{
+                            cout << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
+                        }
+                        break;
                     }
                 }
-
-            }else{
-                destino->setPai(atual);
-                abertos.push_back(destino);
-                abertos_custo.push_back(atual->getArestas().at(i)->getCusto() + custo_atual);
+                if(j == abertos.size())
+                    abertos.push_back(novo);
             }
         }
 
         fechados.push_back(atual);
 
         //ordena lista de abertos
-        bubble_sort(abertos, abertos_custo);
+        sort(abertos.begin(),abertos.end(), [](No_busca_ordenada* a, No_busca_ordenada* b){ return a->custo <  b->custo; });
 
-        cout << "Lista de abertos: ";
-        for (int i = 0; i < abertos.size(); i++){
-            cout << abertos.at(i)->getEstado() << "(";
-            cout << abertos_custo.at(i) << ") ";
+        cout << "Lista de estados abertos: ";
+        for (size_t i = 0; i < abertos.size(); i++){
+            cout << abertos.at(i)->no->getEstado() << "(";
+            cout << abertos.at(i)->custo << ") ";
         }
-
+        cout << endl;
+        cout << "Lista de estados fechados: ";
+        for (size_t i = 0; i < fechados.size(); i++){
+            cout << fechados.at(i)->no->getEstado() << "(";
+            cout << fechados.at(i)->custo << ") ";
+        }
         cout << endl << "________________________________________________" << endl;
-    }
 
-    cout << "O algoritmo chegou ao estado solucao Z com custo " << custo_atual << endl;
-    cout << "Caminho solução: Z ->";
-    while(atual->getPai() != nullptr){
-        cout << atual->getPai()->getEstado() << " -> ";
-        atual = atual->getPai();
-    } 
+    }while(atual->no->getEstado() != estado_solucao);
+
+    cout << "O algoritmo chegou ao estado solucao " << estado_solucao << " com custo " << atual->custo << endl;
+    cout << "Caminho solucao: ";
+
+    vector<string> resultado;
+    while(atual->pai != nullptr){
+        resultado.push_back(atual->pai->no->getEstado());
+        atual = atual->pai;
+    }
+    for (int i = resultado.size() - 1; i >= 0 ; i--){
+        cout << resultado[i] << " -> ";
+    }
+    cout << estado_solucao << endl;
 }
