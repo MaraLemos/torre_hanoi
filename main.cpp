@@ -20,6 +20,7 @@
  ***********************************************************/
 
 #include "Grafo.h"
+#include <chrono>
 
 using namespace std;
 
@@ -51,6 +52,10 @@ void print_menu(Grafo* grafo_th)
 
 void funcionalidades(char opc, Grafo* grafo_th)
 {
+    auto start = std::chrono::steady_clock::now();
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+ 
     switch (opc)
     {
     case 'a':
@@ -63,7 +68,11 @@ void funcionalidades(char opc, Grafo* grafo_th)
         // TODO: @Gabreu20 - chamar busca em profundidade
         break;
     case 'd':
-        grafo_th->buscaOrdenada();
+        start = std::chrono::steady_clock::now();
+        grafo_th->buscaOrdenada("CCCC");
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end-start;
+        cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";       
         break;
     case 'e':
         // TODO: @RosaOttoni - chamar busca gulosa

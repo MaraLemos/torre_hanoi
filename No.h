@@ -35,8 +35,6 @@ private:
     int custo; //Custo associado a heurística
     vector <Aresta*> arestas;
 
-    No* pai;
-
 public:
     //Constructor
     No(int id, string estado, int custo);
