@@ -302,3 +302,52 @@ void Grafo::buscaOrdenada(string estado_solucao){
         cout << "Resultados no arquivo output/buscaOrdenada.txt" << endl;
     }
 }
+
+    struct No_backtracking{
+        No* no;
+       
+        vector<Aresta*> arestas;
+        No_busca_ordenada* pai;
+    };
+ 
+    void Grafo::buscaBacktracking(string estado_solucao){
+
+        No_backtracking* estado_inicial = new No_backtracking();
+        // No_backtracking* atual = new No_backtracking();
+
+        // String sucesso = false;
+        // String fracasso = false;
+
+        estado_inicial->no = this->nos.at(0);
+        estado_inicial->arestas = this->nos.at(0)->getArestas();
+        sort(estado_inicial->arestas.begin(),estado_inicial->arestas.end(), [](Aresta* a, Aresta* b){return a->getRegra() < b->getRegra();});
+       // estado_inicial->pai = nullptr;
+        
+       // atual = estado_inicial;
+
+        for(int i=0; i<estado_inicial->arestas.size(); i++){
+
+            cout<<estado_inicial->arestas.at(i)->getRegra()<<endl;
+
+        }
+       // buscaBack(atual->no->prox())
+        delete [] estado_inicial;
+    }
+    // void Grafo::buscaBack(No* no, String& sucesso, String& fracasso ){
+
+    //     if(atual is solução)
+    //         solução = true;
+    //         exit(0);
+
+    //     if(no->regras == null){
+    //         impasse =  true;
+    //     }
+    //     else
+    //         buscaBack(no->prox);
+
+    //         /*
+    //             prox->pai = atual->no;
+    //             prox->nvel = atal->nivel+1;            
+            
+    //         */
+    // }

@@ -57,6 +57,7 @@ public:
     bool removeAresta(int origemId, int destinoId);
     void imprime();
     //Buscas
+    void buscaBacktracking(string estado_solucao);
     void buscaOrdenada(string estado_solucao);
 };
 #endif //GRAFO_H
