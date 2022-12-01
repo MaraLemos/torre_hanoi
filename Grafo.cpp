@@ -302,3 +302,102 @@ void Grafo::buscaOrdenada(string estado_solucao){
         cout << "Resultados no arquivo output/buscaOrdenada.txt" << endl;
     }
 }
+
+/**
+ * Algoritmo de busca em profundidade
+ * @param estado_solucao
+ * 
+ * @author Gabriel Pereira
+ */
+void Grafo::buscaEmProfundidade(string estado_solucao){
+
+        ofstream saida;
+    saida.open("output\\buscaProfundidade.txt", ios::trunc);
+
+    vector<No_busca_ordenada*> abertos;
+    vector<No_busca_ordenada*> fechados;
+    
+    No_busca_ordenada* atual = new No_busca_ordenada();
+    atual->no = this->nos.at(0);
+    atual->pai = nullptr;
+    atual->custo = 0;
+
+    abertos.push_back(atual);
+
+    do{
+
+        atual = abertos.at(0);
+        abertos.erase(abertos.begin());
+
+        if(saida.is_open())
+            saida << "Estado atual: " << atual->no->getEstado() << "(" << atual->custo << ")" << endl;
+
+        for (size_t i = atual->no->getArestas().size(); i > 0; i--){
+            
+            No* novo_estado = getNo(atual->no->getArestas().at(i-1)->getDestinoId());
+
+            if(!existeCiclo(novo_estado, atual)){
+
+                No_busca_ordenada* novo = new No_busca_ordenada();
+                novo->no = novo_estado;
+                novo->pai = atual;
+                novo->custo = atual->no->getArestas().at(i-1)->getCusto() + atual->custo;
+
+                size_t j = 0;
+                for(; j < abertos.size(); j++){
+                    if(abertos.at(j)->no == novo_estado){ //Verifica se no já está na lista de abertos
+                        if (abertos.at(j)->custo > novo->custo){ //Verifica qual nó tem o menor custo, poda o de maior custo
+                            if(saida.is_open())
+                                saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << ")" << endl;
+                            abertos.at(j) = novo;
+                        }else{
+                            if(saida.is_open())
+                                saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
+                        }
+                        break;
+                    }
+                }
+                if(j == abertos.size()) //Se nó não está na lista de abertos
+                    abertos.insert( abertos.begin() ,novo);
+            }
+        }
+
+        //Fecha estado com os nós filhos já vizitados
+        fechados.push_back(atual);
+
+        //Escrita no arquivo de saida
+        if(saida.is_open()){
+            saida << "Lista de estados abertos: ";
+            for (size_t i = 0; i < abertos.size(); i++){
+                saida << abertos.at(i)->no->getEstado() << "(";
+                saida << abertos.at(i)->custo << ") ";
+            }
+            saida << endl;
+            saida << "Lista de estados fechados: ";
+            for (size_t i = 0; i < fechados.size(); i++){
+                saida << fechados.at(i)->no->getEstado() << "(";
+                saida << fechados.at(i)->custo << ") ";
+            }
+            saida << endl << "________________________________________________" << endl;
+        }
+
+    }while(atual->no->getEstado() != estado_solucao);
+
+    //Escrita no arquivo de saida
+    if(saida.is_open()){
+        saida << "O algoritmo chegou ao estado solucao " << estado_solucao << " com custo " << atual->custo << endl;
+        saida << "Caminho solucao: ";
+
+        vector<string> resultado;
+        while(atual->pai != nullptr){
+            resultado.push_back(atual->pai->no->getEstado());
+            atual = atual->pai;
+        }
+        for (int i = resultado.size() - 1; i >= 0 ; i--){
+            saida << resultado[i] << " -> ";
+        }
+        saida << estado_solucao << endl;
+        cout << "Resultados no arquivo output/buscaProfundidade.txt" << endl;
+    }
+}
+
