@@ -311,14 +311,12 @@ struct No_backtracking{
     No_backtracking* pai = nullptr;
 };
 
-bool existeCicloBack(No* novo, No_backtracking* arvore){
+bool existeCicloBack(No* novo, vector<No*> arvore){
     
-    while (arvore->no != nullptr){
-        if (arvore->no == novo){
-            cout<<"deu ruim"<<endl;
+    for(int i = 0; i < arvore.size(); i++){
+        if (arvore.at(i) == novo){
             return true;
         }
-        arvore->no = arvore->pai->no;
     }
     return false;
 }
@@ -336,15 +334,13 @@ void Grafo::buscaBacktracking(string estado_solucao){
     cout<< "--------------------------- HELLO ----------------------------------"<<endl;
      ofstream file;
      file.open("output\\backtracking.txt", ios::trunc);
-
+    vector<No*> nosUsados;
     No_backtracking* estado_inicial = new No_backtracking();  //primeiro nó da arvore
     No_backtracking* atual = new No_backtracking();           //nó atual
-    No_backtracking* prox = new No_backtracking();            //nó auxiliar
     bool sucesso = false;
     bool fracasso = false;
     bool ciclo = false;
-    int nivelMax = 20;
-
+    int nivelMax = 50;
 
     estado_inicial->no = this->nos.at(0);
     estado_inicial->nivel = 0;
@@ -353,97 +349,64 @@ void Grafo::buscaBacktracking(string estado_solucao){
     atual = estado_inicial;
     
     do{
-        file<<"ENTREI  "<<endl;
         if(atual->nivel >= nivelMax)                        //atual atingiu o nivel maximo
         {
             file <<"IF1 nivel "<<atual->nivel <<endl;
             atual = atual->pai;
             atual->arestas.erase(atual->arestas.begin());   //remove a regra usada e volta para o pai
         }
-        file<< getNo(atual->arestas.at(0)->getDestinoId())->getEstado()<< endl;
-        prox->no = getNo(atual->arestas.at(0)->getDestinoId());
-        prox->arestas = getNo(atual->arestas.at(0)->getDestinoId())->getArestas();
-        prox->pai = atual;
-        prox->nivel = (atual->nivel) + 1;
-        ordenaAresta(prox);
+        file<<"ATUAL: " <<atual->no->getEstado()<< " -> PROX:   ";
+        file << getNo(atual->arestas.at(0)->getDestinoId())->getEstado()<< endl;
 
-        ciclo = existeCicloBack(prox->no, atual);
-        file<<"TESTANDO A PORRA DO CICLO        "<<ciclo<<endl;
+        No* no = getNo(atual->arestas.at(0)->getDestinoId());
+        ciclo = existeCicloBack(no, nosUsados);
         if(!ciclo)                    //verifica se não há ciclo
         {
-            file<<"IF2 não ciclo, atual: " << atual->no->getEstado() << " " <<endl;
-            atual = prox;                              
+            file<<"IF2 não ciclo, atual: " << atual->no->getEstado() << " " <<endl;                              
             if(!atual->arestas.empty())                     //verifica se há regras para ser usadas
             {
+                nosUsados.insert(nosUsados.end(),atual->no);
+                
+                atual->pai = atual;
+                atual-> no = no;
+                atual->arestas = no->getArestas();
+                (atual->nivel)++ ; 
+                ordenaAresta(atual); 
                 file<<"IF3 há regras: "<< atual->arestas.size() << " "<<endl;
                 if(atual->no->getEstado() == estado_solucao) //se for solução - acaba
                 {
                     file<<"IF 4, ACHOUUUUUUUUUU      "<<atual->no->getEstado() << "   "<<endl;
                     sucesso = true;
-                }
-                else                                         //se não for solução, utiliza a primeira regra disponivel
-                {                  
-                    file<<"ELSE, prox regra     ";                       
-                    prox->no = getNo(prox->arestas.at(0)->getDestinoId());
-                    prox->arestas = prox->no->getArestas();
-                    prox->pai = atual;
-                    prox->nivel = (prox->nivel) + 1;
-                    ordenaAresta(prox);
-                    file<<prox->no->getEstado()<<endl;
+                    nosUsados.insert(nosUsados.end(),atual->no);
                 }
             }
             else                                            // se não a regras para serem usadas
             {
                 file<<"Não há regras:     ";
+                nosUsados.erase(nosUsados.end());
                 if(atual->no == estado_inicial->no)         //se voltou para o estado inicial a busca acaba com fracasso
                 {
                     fracasso = true;
                 }
                 else                                        //não encontrou solução nem impasse
                 {
-                    atual->arestas.erase(atual->arestas.begin());     //remove a ultima regra utilizada e volta para o pai
+                     //remove a ultima regra utilizada e volta para o pai
                     atual = atual->pai;
                 }
             }
         }
         else //existe ciclo
         {
-            file<<"TEM CICLO     "<<endl;
             file<<"Tam do vector antes     "<< atual->arestas.size();
             atual->arestas.erase(atual->arestas.begin()); //remove a regra que causa ciclo
-            file<<"             Tam do vector depois     "<< atual->arestas.size();
         }
     } while(!( sucesso || fracasso ));
 
     
    
     file << "Caminho solucao: "<<endl;
-    while( atual->no != nullptr){
-        cout << atual->no->getEstado()<< "  ->   "   ;
-        atual = atual->pai;
+    for(int i = 0; i < nosUsados.size(); i++){
+        cout<<nosUsados.at(i)->getEstado() <<" ->  ";
     }
-    //  cout << "Resultados no arquivo output/buscaOrdenada.txt" << endl;
-        // delete [] estado_inicial;
-        // delete [] atual;
     
 }
-
-
-    // void Grafo::buscaBack(No* no, String& sucesso, String& fracasso ){
-
-    //     if(atual is solução)
-    //         solução = true;
-    //         exit(0);
-
-    //     if(no->regras == null){
-    //         impasse =  true;
-    //     }
-    //     else
-    //         buscaBack(no->prox);
-
-    //         /*
-    //             prox->pai = atual->no;
-    //             prox->nvel = atal->nivel+1;            
-            
-    //         */
-    // }
