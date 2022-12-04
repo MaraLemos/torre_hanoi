@@ -37,6 +37,7 @@
 using namespace std;
 
 class Grafo {
+
 private:
     vector <No*> nos;
     int totalArestas;

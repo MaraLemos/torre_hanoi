@@ -55,36 +55,42 @@ void funcionalidades(char opc, Grafo* grafo_th)
     auto start = std::chrono::steady_clock::now();
     auto end = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed_seconds = end-start;
- 
+    
     switch (opc)
     {
-    case 'a':
-        // TODO: @0ket - chamar busca backtracking
-        break;
-    case 'b':
-        // TODO: @mariana - chamar busca em largura
-        break;
-    case 'c':
-        // TODO: @Gabreu20 - chamar busca em profundidade
-        break;
-    case 'd':
-        start = std::chrono::steady_clock::now();
-        grafo_th->buscaOrdenada("CCCC");
-        end = std::chrono::steady_clock::now();
-        elapsed_seconds = end-start;
-        cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";       
-        break;
-    case 'e':
-        // TODO: @RosaOttoni - chamar busca gulosa
-        break;
-    case 'f':
-        // TODO: @LuciaPereira - chamar busca A*
-        break;
-    default:
-        cout << "Opção inválida. Tente novamente, digitando uma opção válida (a, b, c, d, e ou f): ";
-        cin >> opc;
-        funcionalidades(opc, grafo_th);
-        break;
+        case 'a':
+            // TODO: @0ket - chamar busca backtracking
+            cout<<"AUAIB"<<endl;
+            start = std::chrono::steady_clock::now();
+            grafo_th->buscaBacktracking("CCCC");
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end-start;
+            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n"; 
+            break;
+        case 'b':
+            // TODO: @mariana - chamar busca em largura
+            break;
+        case 'c':
+            // TODO: @Gabreu20 - chamar busca em profundidade
+            break;
+        case 'd':
+            start = std::chrono::steady_clock::now();
+            grafo_th->buscaOrdenada("CCCC");
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end-start;
+            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";       
+            break;
+        case 'e':
+            // TODO: @RosaOttoni - chamar busca gulosa
+            break;
+        case 'f':
+            // TODO: @LuciaPereira - chamar busca A*
+            break;
+        default:
+            cout << "Opção inválida. Tente novamente, digitando uma opção válida (a, b, c, d, e ou f): ";
+            cin >> opc;
+            funcionalidades(opc, grafo_th);
+            break;
     }
 
     cout << endl

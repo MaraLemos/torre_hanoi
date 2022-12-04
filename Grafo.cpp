@@ -21,6 +21,7 @@
 
 #include "Grafo.h"
 
+
 /**
  * Construtor do objeto grafo
  *
@@ -303,36 +304,131 @@ void Grafo::buscaOrdenada(string estado_solucao){
     }
 }
 
-    struct No_backtracking{
-        No* no;
-       
-        vector<Aresta*> arestas;
-        No_busca_ordenada* pai;
-    };
- 
-    void Grafo::buscaBacktracking(string estado_solucao){
+struct No_backtracking{
+    No* no;
+    int nivel;
+    vector<Aresta*> arestas;
+    No_backtracking* pai = nullptr;
+};
 
-        No_backtracking* estado_inicial = new No_backtracking();
-        // No_backtracking* atual = new No_backtracking();
-
-        // String sucesso = false;
-        // String fracasso = false;
-
-        estado_inicial->no = this->nos.at(0);
-        estado_inicial->arestas = this->nos.at(0)->getArestas();
-        sort(estado_inicial->arestas.begin(),estado_inicial->arestas.end(), [](Aresta* a, Aresta* b){return a->getRegra() < b->getRegra();});
-       // estado_inicial->pai = nullptr;
-        
-       // atual = estado_inicial;
-
-        for(int i=0; i<estado_inicial->arestas.size(); i++){
-
-            cout<<estado_inicial->arestas.at(i)->getRegra()<<endl;
-
+bool existeCicloBack(No* novo, No_backtracking* arvore){
+    
+    while (arvore->no != nullptr){
+        if (arvore->no == novo){
+            cout<<"deu ruim"<<endl;
+            return true;
         }
-       // buscaBack(atual->no->prox())
-        delete [] estado_inicial;
+        arvore->no = arvore->pai->no;
     }
+    return false;
+}
+
+void ordenaAresta(No_backtracking* no)
+{
+    sort(no->arestas.begin()                                         //ordena o vetor de arestas por regra
+        ,no->arestas.end()                                           // (0) a->b, (1) a->c, (2) b->a, (3) b->c, (4) c->a e (5) c->b
+        ,[](Aresta* a, Aresta* b)
+        {return a->getRegra() < b->getRegra();});
+}
+
+void Grafo::buscaBacktracking(string estado_solucao){
+
+    cout<< "--------------------------- HELLO ----------------------------------"<<endl;
+     ofstream file;
+     file.open("output\\backtracking.txt", ios::trunc);
+
+    No_backtracking* estado_inicial = new No_backtracking();  //primeiro nó da arvore
+    No_backtracking* atual = new No_backtracking();           //nó atual
+    No_backtracking* prox = new No_backtracking();            //nó auxiliar
+    bool sucesso = false;
+    bool fracasso = false;
+    bool ciclo = false;
+    int nivelMax = 20;
+
+
+    estado_inicial->no = this->nos.at(0);
+    estado_inicial->nivel = 0;
+    estado_inicial->arestas = this->nos.at(0)->getArestas();
+    ordenaAresta(estado_inicial);
+    atual = estado_inicial;
+    
+    do{
+        file<<"ENTREI  "<<endl;
+        if(atual->nivel >= nivelMax)                        //atual atingiu o nivel maximo
+        {
+            file <<"IF1 nivel "<<atual->nivel <<endl;
+            atual = atual->pai;
+            atual->arestas.erase(atual->arestas.begin());   //remove a regra usada e volta para o pai
+        }
+        file<< getNo(atual->arestas.at(0)->getDestinoId())->getEstado()<< endl;
+        prox->no = getNo(atual->arestas.at(0)->getDestinoId());
+        prox->arestas = getNo(atual->arestas.at(0)->getDestinoId())->getArestas();
+        prox->pai = atual;
+        prox->nivel = (atual->nivel) + 1;
+        ordenaAresta(prox);
+
+        ciclo = existeCicloBack(prox->no, atual);
+        file<<"TESTANDO A PORRA DO CICLO        "<<ciclo<<endl;
+        if(!ciclo)                    //verifica se não há ciclo
+        {
+            file<<"IF2 não ciclo, atual: " << atual->no->getEstado() << " " <<endl;
+            atual = prox;                              
+            if(!atual->arestas.empty())                     //verifica se há regras para ser usadas
+            {
+                file<<"IF3 há regras: "<< atual->arestas.size() << " "<<endl;
+                if(atual->no->getEstado() == estado_solucao) //se for solução - acaba
+                {
+                    file<<"IF 4, ACHOUUUUUUUUUU      "<<atual->no->getEstado() << "   "<<endl;
+                    sucesso = true;
+                }
+                else                                         //se não for solução, utiliza a primeira regra disponivel
+                {                  
+                    file<<"ELSE, prox regra     ";                       
+                    prox->no = getNo(prox->arestas.at(0)->getDestinoId());
+                    prox->arestas = prox->no->getArestas();
+                    prox->pai = atual;
+                    prox->nivel = (prox->nivel) + 1;
+                    ordenaAresta(prox);
+                    file<<prox->no->getEstado()<<endl;
+                }
+            }
+            else                                            // se não a regras para serem usadas
+            {
+                file<<"Não há regras:     ";
+                if(atual->no == estado_inicial->no)         //se voltou para o estado inicial a busca acaba com fracasso
+                {
+                    fracasso = true;
+                }
+                else                                        //não encontrou solução nem impasse
+                {
+                    atual->arestas.erase(atual->arestas.begin());     //remove a ultima regra utilizada e volta para o pai
+                    atual = atual->pai;
+                }
+            }
+        }
+        else //existe ciclo
+        {
+            file<<"TEM CICLO     "<<endl;
+            file<<"Tam do vector antes     "<< atual->arestas.size();
+            atual->arestas.erase(atual->arestas.begin()); //remove a regra que causa ciclo
+            file<<"             Tam do vector depois     "<< atual->arestas.size();
+        }
+    } while(!( sucesso || fracasso ));
+
+    
+   
+    file << "Caminho solucao: "<<endl;
+    while( atual->no != nullptr){
+        cout << atual->no->getEstado()<< "  ->   "   ;
+        atual = atual->pai;
+    }
+    //  cout << "Resultados no arquivo output/buscaOrdenada.txt" << endl;
+        // delete [] estado_inicial;
+        // delete [] atual;
+    
+}
+
+
     // void Grafo::buscaBack(No* no, String& sucesso, String& fracasso ){
 
     //     if(atual is solução)
