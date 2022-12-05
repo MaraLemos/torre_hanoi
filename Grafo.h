@@ -59,5 +59,7 @@ public:
     //Buscas
     void buscaOrdenada(string estado_solucao);
     void buscaEmProfundidade(string estado_solucao);
+    void buscaEmLargura(string estado_solucao);
+
 };
 #endif //GRAFO_H

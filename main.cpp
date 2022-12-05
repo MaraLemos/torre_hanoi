@@ -62,7 +62,11 @@ void funcionalidades(char opc, Grafo* grafo_th)
         // TODO: @0ket - chamar busca backtracking
         break;
     case 'b':
-        // TODO: @mariana - chamar busca em largura
+        start = std::chrono::steady_clock::now();
+        grafo_th->buscaEmLargura("CCCC");
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end-start;
+        cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";      
         break;
     case 'c':
         start = std::chrono::steady_clock::now();
