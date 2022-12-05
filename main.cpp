@@ -85,10 +85,18 @@ void funcionalidades(char opc, Grafo* grafo_th)
             }
             break;
         case 'b':
-            // TODO: @mariana - chamar busca em largura
+            start = std::chrono::steady_clock::now();
+            grafo_th->buscaEmLargura("CCCC");
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end-start;
+            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";      
             break;
         case 'c':
-            // TODO: @Gabreu20 - chamar busca em profundidade
+            start = std::chrono::steady_clock::now();
+            grafo_th->buscaEmProfundidade("CCCC");
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end-start;
+            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";      
             break;
         case 'd':
             start = std::chrono::steady_clock::now();
