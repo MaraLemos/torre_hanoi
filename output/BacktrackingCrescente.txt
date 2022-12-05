@@ -1,0 +1,3 @@
+O algoritmo chegou ao estado solucao CCCC
+Caminho solucao: AAAA ->  BAAA ->  BCAA ->  ACAA ->  CCAA ->  CCBA ->  ACBA ->  BCBA ->  BABA ->  AABA ->  CABA ->  CBBA ->  ABBA ->  BBBA ->  BBBC ->  ABBC ->  CBBC ->  CABC ->  AABC ->  BABC ->  BCBC ->  ACBC ->  CCBC ->  CCAC ->  ACAC ->  BCAC ->  BAAC ->  AAAC ->  CAAC ->  CBAC ->  ABAC ->  BBAC ->  BBCC ->  ABCC ->  CBCC ->  CACC ->  AACC ->  BACC ->  BCCC ->  ACCC ->  CCCC
+Quantidades de Retornos: 0
