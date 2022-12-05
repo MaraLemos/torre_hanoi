@@ -57,11 +57,11 @@ public:
     bool removeNo(int id);
     bool removeAresta(int origemId, int destinoId);
     void imprime();
-    //Buscas
+    //Buscas - P1
     void buscaBacktracking(string estado_solucao, int i);
-    void buscaOrdenada(string estado_solucao);
     void buscaEmProfundidade(string estado_solucao);
     void buscaEmLargura(string estado_solucao);
-
+    //Buscas - P2
+    void buscaOrdenada(string estado_solucao);
 };
 #endif //GRAFO_H
