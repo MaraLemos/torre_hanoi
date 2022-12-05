@@ -60,12 +60,29 @@ void funcionalidades(char opc, Grafo* grafo_th)
     {
         case 'a':
             // TODO: @0ket - chamar busca backtracking
-            cout<<"AUAIB"<<endl;
-            start = std::chrono::steady_clock::now();
-            grafo_th->buscaBacktracking("CCCC");
-            end = std::chrono::steady_clock::now();
-            elapsed_seconds = end-start;
-            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n"; 
+            int i ;
+            cout << "Digite (1) para ordem crescente de regras ou (2) para ordem decrescente: ";
+            cin >> i;
+            switch(i){
+                case 1:
+                    start = std::chrono::steady_clock::now();
+                    grafo_th->buscaBacktracking("CCCC", 1);
+                    end = std::chrono::steady_clock::now();
+                    elapsed_seconds = end-start;
+                    cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n"; 
+                    break;
+                case 2:
+                    start = std::chrono::steady_clock::now();
+                    grafo_th->buscaBacktracking("CCCC", 2);
+                    end = std::chrono::steady_clock::now();
+                    elapsed_seconds = end-start;
+                    cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n"; 
+                    break;
+                default:
+                    cout << "Opção inválida! "<<endl;
+                    funcionalidades(opc, grafo_th);
+                    break;
+            }
             break;
         case 'b':
             // TODO: @mariana - chamar busca em largura

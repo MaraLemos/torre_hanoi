@@ -313,100 +313,91 @@ struct No_backtracking{
 
 bool existeCicloBack(No* novo, vector<No*> arvore){
     
-    for(int i = 0; i < arvore.size(); i++){
-        if (arvore.at(i) == novo){
+    for(int i = 0; i < arvore.size(); i++)
+        if (arvore.at(i) == novo)
             return true;
-        }
-    }
     return false;
 }
 
-void ordenaAresta(No_backtracking* no)
-{
-    sort(no->arestas.begin()                                         //ordena o vetor de arestas por regra
+void ordenaAresta(No_backtracking* no, int i){
+    if(i == 1){
+        sort(no->arestas.begin()                                         //ordena o vetor de arestas por regra
         ,no->arestas.end()                                           // (0) a->b, (1) a->c, (2) b->a, (3) b->c, (4) c->a e (5) c->b
         ,[](Aresta* a, Aresta* b)
         {return a->getRegra() < b->getRegra();});
+    }
+    else{
+        sort(no->arestas.begin()                                         //ordena o vetor de arestas por regra
+        ,no->arestas.end()                                           //(5) c->b, (4) c->a, (3) b->c, (2) b->a,(1) a->c e (0) a->b
+        ,[](Aresta* a, Aresta* b)
+        {return a->getRegra() > b->getRegra();});
+    }
+
 }
 
-void Grafo::buscaBacktracking(string estado_solucao){
+void Grafo::buscaBacktracking(string estado_solucao, int i)
+{
+    ofstream file;
+    file.open("output\\Backtracking.txt", ios::trunc);
 
-    cout<< "--------------------------- HELLO ----------------------------------"<<endl;
-     ofstream file;
-     file.open("output\\backtracking.txt", ios::trunc);
-    vector<No*> nosUsados;
-    No_backtracking* estado_inicial = new No_backtracking();  //primeiro nó da arvore
-    No_backtracking* atual = new No_backtracking();           //nó atual
     bool sucesso = false;
     bool fracasso = false;
-    bool ciclo = false;
     int nivelMax = 50;
+    int retorno = 0;
+    vector<No*> nosUsados;
+    No_backtracking* estado_inicial = new No_backtracking();
+    No_backtracking* atual = new No_backtracking();           
 
     estado_inicial->no = this->nos.at(0);
     estado_inicial->nivel = 0;
     estado_inicial->arestas = this->nos.at(0)->getArestas();
-    ordenaAresta(estado_inicial);
+    ordenaAresta(estado_inicial,i);
     atual = estado_inicial;
     
     do{
         if(atual->nivel >= nivelMax)                        //atual atingiu o nivel maximo
         {
-            file <<"IF1 nivel "<<atual->nivel <<endl;
             atual = atual->pai;
             atual->arestas.erase(atual->arestas.begin());   //remove a regra usada e volta para o pai
+            retorno = retorno + 1;
         }
-        file<<"ATUAL: " <<atual->no->getEstado()<< " -> PROX:   ";
-        file << getNo(atual->arestas.at(0)->getDestinoId())->getEstado()<< endl;
-
         No* no = getNo(atual->arestas.at(0)->getDestinoId());
-        ciclo = existeCicloBack(no, nosUsados);
-        if(!ciclo)                    //verifica se não há ciclo
-        {
-            file<<"IF2 não ciclo, atual: " << atual->no->getEstado() << " " <<endl;                              
+        if(!existeCicloBack(no, nosUsados))                    //verifica se não há ciclo
+        {                             
             if(!atual->arestas.empty())                     //verifica se há regras para ser usadas
             {
                 nosUsados.insert(nosUsados.end(),atual->no);
-                
                 atual->pai = atual;
                 atual-> no = no;
                 atual->arestas = no->getArestas();
-                (atual->nivel)++ ; 
-                ordenaAresta(atual); 
-                file<<"IF3 há regras: "<< atual->arestas.size() << " "<<endl;
-                if(atual->no->getEstado() == estado_solucao) //se for solução - acaba
-                {
-                    file<<"IF 4, ACHOUUUUUUUUUU      "<<atual->no->getEstado() << "   "<<endl;
+                (atual->nivel)++; 
+                ordenaAresta(atual,i); 
+                if(atual->no->getEstado() == estado_solucao){
                     sucesso = true;
-                    nosUsados.insert(nosUsados.end(),atual->no);
                 }
             }
-            else                                            // se não a regras para serem usadas
-            {
-                file<<"Não há regras:     ";
-                nosUsados.erase(nosUsados.end());
-                if(atual->no == estado_inicial->no)         //se voltou para o estado inicial a busca acaba com fracasso
-                {
+            else{
+                if(atual->no == estado_inicial->no){
                     fracasso = true;
                 }
-                else                                        //não encontrou solução nem impasse
-                {
-                     //remove a ultima regra utilizada e volta para o pai
+                else{
                     atual = atual->pai;
+                    retorno = retorno + 1;
                 }
             }
         }
-        else //existe ciclo
-        {
-            file<<"Tam do vector antes     "<< atual->arestas.size();
+        else {
             atual->arestas.erase(atual->arestas.begin()); //remove a regra que causa ciclo
         }
     } while(!( sucesso || fracasso ));
 
-    
-   
-    file << "Caminho solucao: "<<endl;
+    file << "O algoritmo chegou ao estado solucao " << estado_solucao <<endl;
+    file << "Caminho solucao: ";
     for(int i = 0; i < nosUsados.size(); i++){
-        cout<<nosUsados.at(i)->getEstado() <<" ->  ";
+        file << nosUsados.at(i)->getEstado() <<" ->  ";
     }
+    file << estado_solucao << endl;
+    file <<"Quantidades de Retornos: "<<retorno<<endl;
+    cout << "Resultados no arquivo output/Backtracking.txt" << endl;
     
 }
