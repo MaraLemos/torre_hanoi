@@ -410,6 +410,8 @@ void Grafo::buscaBacktracking(string estado_solucao, int i)
     cout << "Resultados no arquivo output/Backtracking.txt" << endl;
     
 }
+
+
 /**
  * Algoritmo de busca em largura
  * @param estado_solucao
@@ -472,7 +474,7 @@ void Grafo::buscaEmLargura(string estado_solucao){
                     saida << estado_solucao << endl;
                     cout << "Resultados no arquivo output/buscaEmLargura.txt" << endl;
                 }
-                //precisa colocar break aqui?       
+                     
 
             }
                 
@@ -481,30 +483,34 @@ void Grafo::buscaEmLargura(string estado_solucao){
 
                     No* novo_estado = getNo(atual->no->getArestas().at(i)->getDestinoId());
 
-                    if(!existeCiclo(novo_estado, atual)){
+                    bool ciclooupoda = false;
+                    for(int i=0; i<abertos.size(); i++){ //verifica poda
+                        if(abertos.at(i)->no->getEstado() == novo_estado->getEstado()){
+                            if(saida.is_open())
+                                saida << "Poda do estado " << novo_estado->getEstado() << endl;
+
+                            ciclooupoda=true; //poda 
+                        }
+                    }
+
+                    for(int i=0; i<fechados.size(); i++){ //verifica ciclo/poda
+                        if(fechados.at(i)->no->getEstado() == novo_estado->getEstado()){
+                            
+                            ciclooupoda=true; //ciclo/poda
+                        }
+                    }
+
+                    if(!ciclooupoda){ //verifica ciclos e podas
 
                         No_busca_ordenada* novo = new No_busca_ordenada();
                         novo->no = novo_estado;
                         novo->pai = atual;
                         novo->custo = atual->no->getArestas().at(i)->getCusto() + atual->custo;
+                        abertos.push_back(novo); //adiciona na lista de abertos
 
-                        size_t j = 0;
-                        for(; j < abertos.size(); j++){
-                            if(abertos.at(j)->no == novo_estado){ //Verifica se no já está na lista de abertos
-                                if (abertos.at(j)->custo > novo->custo){ //Verifica qual nó tem o menor custo, poda o de maior custo
-                                    if(saida.is_open())
-                                        saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << ")" << endl;
-                                    abertos.at(j) = novo;
-                                }else{
-                                    if(saida.is_open())
-                                        saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
-                                }
-                                break;
-                            }
-                        }
-                        if(j == abertos.size()) //Se nó não está na lista de abertos
-                            abertos.push_back(novo);
                     }
+
+                    
                 }
 
                 //Fecha estado com os nós filhos já vizitados
@@ -530,6 +536,8 @@ void Grafo::buscaEmLargura(string estado_solucao){
         }
 
     }
+    
+    saida.close();
 
 }
 
@@ -648,6 +656,7 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
         saida << estado_solucao << endl;
         cout << "Resultados no arquivo output/buscaProfundidade.txt" << endl;
     }
+    saida.close();
 }
 
 
