@@ -343,9 +343,6 @@ void ordenaAresta(No_backtracking* no, int i){
 
 void Grafo::buscaBacktracking(string estado_solucao, int i)
 {
-    ofstream file;
-    file.open("output\\Backtracking.txt", ios::trunc);
-
     bool sucesso = false;
     bool fracasso = false;
     int nivelMax = 50;
@@ -396,6 +393,12 @@ void Grafo::buscaBacktracking(string estado_solucao, int i)
             atual->arestas.erase(atual->arestas.begin()); //remove a regra que causa ciclo
         }
     } while(!( sucesso || fracasso ));
+
+    ofstream file;
+    if(i==1)
+        file.open("output\\BacktrackingCrescente.txt", ios::trunc);
+    else
+        file.open("output\\BacktrackingDecrescente.txt", ios::trunc);
 
     file << "O algoritmo chegou ao estado solucao " << estado_solucao <<endl;
     file << "Caminho solucao: ";
