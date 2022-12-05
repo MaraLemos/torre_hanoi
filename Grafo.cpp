@@ -536,15 +536,32 @@ void Grafo::buscaEmLargura(string estado_solucao){
  * 
  * @author Gabriel Pereira
  */
+struct No_busca_l_p{
+    No* no;
+    int custo;
+    int id;
+
+    No_busca_l_p* pai;
+};
+bool existeCiclo_l_p(No* novo, No_busca_l_p* arvore){
+    
+    while (arvore != nullptr){
+        if (arvore->no == novo){
+            return true;
+        }
+        arvore = arvore->pai;
+    }
+    return false;
+}
 void Grafo::buscaEmProfundidade(string estado_solucao){
 
     ofstream saida;
     saida.open("output\\buscaProfundidade.txt", ios::trunc);
 
-    vector<No_busca_ordenada*> abertos;
-    vector<No_busca_ordenada*> fechados;
+    vector<No_busca_l_p*> abertos;
+    vector<No_busca_l_p*> fechados;
     
-    No_busca_ordenada* atual = new No_busca_ordenada();
+    No_busca_l_p* atual = new No_busca_l_p();
     atual->no = this->nos.at(0);
     atual->pai = nullptr;
     atual->custo = 0;
@@ -563,12 +580,13 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
             
             No* novo_estado = getNo(atual->no->getArestas().at(i-1)->getDestinoId());
 
-            if(!existeCiclo(novo_estado, atual)){
+            if(!existeCiclo_l_p(novo_estado, atual)){
 
-                No_busca_ordenada* novo = new No_busca_ordenada();
+                No_busca_l_p* novo = new No_busca_l_p();
                 novo->no = novo_estado;
                 novo->pai = atual;
                 novo->custo = atual->no->getArestas().at(i-1)->getCusto() + atual->custo;
+                novo->id = atual->no->getArestas().at(i-1)->getDestinoId();
 
                 size_t j = 0;
                 for(; j < abertos.size(); j++){
@@ -588,6 +606,7 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
                     abertos.insert( abertos.begin() ,novo);
             }
         }
+        sort(abertos.begin(),abertos.end(), [](No_busca_l_p* a, No_busca_l_p* b){ return a->id >  b->id; });
 
         //Fecha estado com os nós filhos já vizitados
         fechados.push_back(atual);
@@ -627,4 +646,5 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
         cout << "Resultados no arquivo output/buscaProfundidade.txt" << endl;
     }
 }
+
 
