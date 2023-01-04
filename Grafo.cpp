@@ -660,3 +660,143 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
 }
 
 
+
+
+
+
+
+
+
+/*Busca Gulosa
+
+*/
+
+
+struct No_busca_gulosa{
+    No* no;
+    int custo;
+    int custo_total;
+    No_busca_gulosa* pai;
+};
+
+/**
+ * Função aux de busca gulosa
+ * Verifica se estado pode ser inserido na arvore caso não provoque ciclos
+ * @param novo
+ * @param arvore
+ * 
+ * @author Rosa Maria Ottoni Fernandes
+ */
+bool existeCiclo(No* novo, No_busca_gulosa* arvore){
+    
+    while (arvore != nullptr){
+        if (arvore->no == novo){
+            return true;
+        }
+        arvore = arvore->pai;
+    }
+    return false;
+}
+
+/**
+ * Algoritmo de gulosa
+ * @param estado_solucao
+ * 
+ * @author Rosa Maria Ottoni Fernandes
+ */
+void Grafo::buscaGulosa(string estado_solucao){
+
+    ofstream saida;
+    saida.open("output\\buscaGulosa.txt", ios::trunc);
+
+    vector<No_busca_gulosa*> abertos;
+    vector<No_busca_gulosa*> fechados;
+    
+    No_busca_gulosa* atual = new No_busca_gulosa();
+    atual->no = this->nos.at(0);
+    atual->pai = nullptr;
+    atual->custo_total = 0;
+    atual->custo = this->nos.at(0)->getCusto();
+
+    abertos.push_back(atual);
+
+    do{
+
+        atual = abertos.at(0);
+        abertos.erase(abertos.begin());
+
+        if(saida.is_open())
+            saida << "Estado atual: " << atual->no->getEstado() << "(" << atual->custo << " - "<< atual->custo_total << ")" << endl;
+
+        for (size_t i = 0; i < atual->no->getArestas().size(); i++){
+			
+            No* novo_estado = getNo(atual->no->getArestas().at(i)->getDestinoId());
+
+            if(!existeCiclo(novo_estado, atual)){
+
+                No_busca_gulosa* novo = new No_busca_gulosa();
+                novo->no = novo_estado;
+                novo->pai = atual;
+                novo->custo = novo_estado->getCusto();
+                novo->custo_total = atual->no->getArestas().at(i)->getCusto() + atual->custo_total;
+
+                size_t j = 0;
+                for(; j < abertos.size(); j++){
+                    if(abertos.at(j)->no == novo_estado){ //Verifica se no já está na lista de abertos
+                        if (abertos.at(j)->custo_total > novo->custo_total){ //Verifica qual nó tem o menor custo, poda o de maior custo
+                            if(saida.is_open())
+                                saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << " - " << abertos.at(j)->custo_total << ")" << endl;
+                            abertos.at(j) = novo;
+                        }else{
+                            if(saida.is_open())
+                                saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << " - " << novo->custo_total << ")" << endl;
+                        }
+                        break;
+                    }
+                }
+                if(j == abertos.size()) //Se nó não está na lista de abertos
+                    abertos.push_back(novo);
+            }
+        }
+
+        //Fecha estado com os nós filhos já vizitados
+        fechados.push_back(atual);
+
+        //ordena lista de abertos
+        sort(abertos.begin(),abertos.end(), [](No_busca_gulosa* a, No_busca_gulosa* b){ return a->custo <  b->custo; });
+
+        //Escrita no arquivo de saida
+        if(saida.is_open()){
+            saida << "Lista de estados abertos: ";
+            for (size_t i = 0; i < abertos.size(); i++){
+                saida << abertos.at(i)->no->getEstado() << "(";
+                saida << abertos.at(i)->custo << " - " << abertos.at(i)->custo_total << ") ";
+            }
+            saida << endl;
+            saida << "Lista de estados fechados: ";
+            for (size_t i = 0; i < fechados.size(); i++){
+                saida << fechados.at(i)->no->getEstado() << "(";
+                saida << fechados.at(i)->custo << " - " << fechados.at(i)->custo_total << ") ";
+            }
+            saida << endl << "________________________________________________" << endl;
+        }
+
+    }while(atual->no->getEstado() != estado_solucao);
+
+    //Escrita no arquivo de saida
+    if(saida.is_open()){
+        saida << "O algoritmo chegou ao estado solucao " << estado_solucao << " com custo " << atual->custo_total << endl;
+        saida << "Caminho solucao: ";
+
+        vector<string> resultado;
+        while(atual->pai != nullptr){
+            resultado.push_back(atual->pai->no->getEstado());
+            atual = atual->pai;
+        }
+        for (int i = resultado.size() - 1; i >= 0 ; i--){
+            saida << resultado[i] << " -> ";
+        }
+        saida << estado_solucao << endl;
+        cout << "Resultados no arquivo output/buscaGulosa.txt" << endl;
+    }
+}
