@@ -113,7 +113,11 @@ void funcionalidades(char opc, Grafo* grafo_th)
             cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";       
             break;
         case 'f':
-            // TODO: @LuciaPereira - chamar busca A*
+            start = std::chrono::steady_clock::now();
+            grafo_th->buscaAEstrela("CCCC");
+            end = std::chrono::steady_clock::now();
+            elapsed_seconds = end-start;
+            cout << "Tempo decorrido: " << elapsed_seconds.count() << "s\n";
             break;
         default:
             cout << "Opção inválida. Tente novamente, digitando uma opção válida (a, b, c, d, e ou f): ";

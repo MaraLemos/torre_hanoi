@@ -64,5 +64,6 @@ public:
     //Buscas - P2
     void buscaOrdenada(string estado_solucao);
 	void buscaGulosa(string estado_solucao);
+    void buscaAEstrela(string estado_solucao);
 };
 #endif //GRAFO_H
