@@ -659,19 +659,6 @@ void Grafo::buscaEmProfundidade(string estado_solucao){
     saida.close();
 }
 
-
-
-
-
-
-
-
-
-/*Busca Gulosa
-
-*/
-
-
 struct No_busca_gulosa{
     No* no;
     int custo;
@@ -699,7 +686,7 @@ bool existeCiclo(No* novo, No_busca_gulosa* arvore){
 }
 
 /**
- * Algoritmo de gulosa
+ * Algoritmo de busca gulosa
  * @param estado_solucao
  * 
  * @author Rosa Maria Ottoni Fernandes
@@ -711,6 +698,7 @@ void Grafo::buscaGulosa(string estado_solucao){
 
     vector<No_busca_gulosa*> abertos;
     vector<No_busca_gulosa*> fechados;
+    vector<No_busca_gulosa*> filhos;
     
     No_busca_gulosa* atual = new No_busca_gulosa();
     atual->no = this->nos.at(0);
@@ -724,12 +712,13 @@ void Grafo::buscaGulosa(string estado_solucao){
 
         atual = abertos.at(0);
         abertos.erase(abertos.begin());
+        filhos.clear();
 
         if(saida.is_open())
             saida << "Estado atual: " << atual->no->getEstado() << "(" << atual->custo << " - "<< atual->custo_total << ")" << endl;
 
         for (size_t i = 0; i < atual->no->getArestas().size(); i++){
-			
+            
             No* novo_estado = getNo(atual->no->getArestas().at(i)->getDestinoId());
 
             if(!existeCiclo(novo_estado, atual)){
@@ -746,7 +735,7 @@ void Grafo::buscaGulosa(string estado_solucao){
                         if (abertos.at(j)->custo_total > novo->custo_total){ //Verifica qual nó tem o menor custo, poda o de maior custo
                             if(saida.is_open())
                                 saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << " - " << abertos.at(j)->custo_total << ")" << endl;
-                            abertos.at(j) = novo;
+                            abertos.erase(abertos.begin()+j);
                         }else{
                             if(saida.is_open())
                                 saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << " - " << novo->custo_total << ")" << endl;
@@ -755,15 +744,20 @@ void Grafo::buscaGulosa(string estado_solucao){
                     }
                 }
                 if(j == abertos.size()) //Se nó não está na lista de abertos
-                    abertos.push_back(novo);
+                    filhos.push_back(novo);
             }
         }
 
-        //Fecha estado com os nós filhos já vizitados
+        //Fecha estado com os nós filhos já visitados
         fechados.push_back(atual);
 
-        //ordena lista de abertos
-        sort(abertos.begin(),abertos.end(), [](No_busca_gulosa* a, No_busca_gulosa* b){ return a->custo <  b->custo; });
+        //ordena lista de filhos
+        sort(filhos.begin(),filhos.end(), [](No_busca_gulosa* a, No_busca_gulosa* b){ return a->custo > b->custo; });
+
+        //insere na lista de abertos
+        for(size_t k = 0; k < filhos.size(); k++){
+            abertos.insert( abertos.begin() ,filhos.at(k));
+        }
 
         //Escrita no arquivo de saida
         if(saida.is_open()){
@@ -800,6 +794,7 @@ void Grafo::buscaGulosa(string estado_solucao){
         cout << "Resultados no arquivo output/buscaGulosa.txt" << endl;
     }
 }
+
 /**
  * Algoritmo de busca em A*
  * @param estado_solucao
