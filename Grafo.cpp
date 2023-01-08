@@ -243,22 +243,38 @@ void Grafo::buscaOrdenada(string estado_solucao){
                 novo->pai = atual;
                 novo->custo = atual->no->getArestas().at(i)->getCusto() + atual->custo;
 
-                size_t j = 0;
-                for(; j < abertos.size(); j++){
-                    if(abertos.at(j)->no == novo_estado){ //Verifica se no já está na lista de abertos
-                        if (abertos.at(j)->custo > novo->custo){ //Verifica qual nó tem o menor custo, poda o de maior custo
-                            if(saida.is_open())
-                                saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << ")" << endl;
-                            abertos.at(j) = novo;
-                        }else{
-                            if(saida.is_open())
-                                saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
+                bool existeMenorFechado = false;
+
+                size_t k = 0;
+                for(; k < fechados.size(); k++){
+                    if(fechados.at(k)->no == novo_estado){
+                        if (fechados.at(k)->custo < novo->custo){
+                            existeMenorFechado = true;
+                            saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
+                            break;
                         }
-                        break;
                     }
                 }
-                if(j == abertos.size()) //Se nó não está na lista de abertos
-                    abertos.push_back(novo);
+
+                if(!existeMenorFechado){
+
+                    size_t j = 0;
+                    for(; j < abertos.size(); j++){
+                        if(abertos.at(j)->no == novo_estado){ //Verifica se no já está na lista de abertos
+                            if (abertos.at(j)->custo > novo->custo){ //Verifica qual nó tem o menor custo, poda o de maior custo
+                                if(saida.is_open())
+                                    saida << "Poda do estado " << abertos.at(j)->no->getEstado() << "(" << abertos.at(j)->custo << ")" << endl;
+                                abertos.at(j) = novo;
+                            }else{
+                                if(saida.is_open())
+                                    saida << "Poda do estado " << novo->no->getEstado() << "(" << novo->custo << ")" << endl;
+                            }
+                            break;
+                        }
+                    }
+                    if(j == abertos.size()) //Se nó não está na lista de abertos
+                        abertos.push_back(novo);
+                }
             }
         }
 
